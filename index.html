@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:80%;
+            margin:0 auto;
+            font-size:1em;
+            background-color: #bd485e;
+            padding:15px 20px;
+            color:#fff;
+        }
+        .FormPart{
+            margin:15px 0;
+        }
+        input[type="radio"],input[type="checkbox"]{
+            width:25px;
+            height:25px;
+            vertical-align: middle;
+            margin:0 3px;
+
+        }
+        input[type="radio"]~label{
+            line-height:2em;
+            letter-spacing: 0.5em;
+        }
+        input[type="text"]{
+            height:40px;
+            outline:none;
+            display:block;
+            width: 100%;
+            font-size:20px;
+            color:#333;
+            margin:2px 0 10px;
+            border:2px solid #fff;
+        }
+        input[type="date"]{
+            display:inline-block;
+            height:40px;
+        }
+        button{
+            height: 50px;
+            padding:10px 30px;
+            border:2px solid #fff;
+            background-color: #32af84;
+            color:white;
+        }
+        #buttons{
+            position:relative;
+        }
+        button#copy{
+            background-color: #f18933;
+            position:absolute;
+            right:0;
+            top:0;
+        }
+        #forPickup{
+            display:none;
+        }
+        #bottomMsg{
+            margin-top:20px;
+            line-height:1.5em;
+        }
+        #p_undef,#d_undef{
+            font-weight:bold;
+            color:yellow;
+            font-size:1.2em;
+            letter-spacing: 2px;
+            margin-left:15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<section class="wrap">
+    <section class = "topForm">
+        <div class="FormPart">
+            <input id="types_d" type="radio" name="types" value="delivery" checked>
+            <label for="types_d">送貨</label>
+
+            <input id="types_p" type="radio" name="types" value="pickup" >
+            <label for="types_p">自取</label>
+        </div>
+        <div class="FormPart">
+            <label for="customer">客戶名稱:</label>
+            <input type="text" id="customer" placeholder="客戶名稱">
+
+            <label for="orderNo">單No.:</label>
+            <input type="text" id="orderNo" placeholder="訂單No.">
+
+            <label for="phone">電話:</label>
+            <input type="text" id="phone" placeholder="電話">
+
+            <div id="forDelivery">
+                <label for="d_date">送貨日期:</label>
+                <input type="date" id="d_date">
+
+
+                <input id="d_noon" type="radio" name="d_time" value="0">
+                <label for="d_noon" >午送</label>
+
+                <input id="d_night" type="radio" name="d_time" value="1">
+                <label for="d_night">晚送</label>
+
+                <input id="d_jp" type="radio" name="d_time" value="2">
+                <label for="d_jp">JP送</label>
+                <div id="d_undef">未選時間段！</div>
+            </div>
+
+            <div id="forPickup">
+                <label for="p_date">自取日期:</label>
+                <input type="date" id="p_date">
+                <span id="p_undef">未提供！</span>
+            </div>
+        </div>
+        <div id="buttons">
+            <button id="whatsapp" onclick="sendWhatsApp();">Send Whatsapp</button>
+            <button id="copy" onclick="copyMsg();">Copy Msg</button>
+        </div>
+
+    </section>
+    <section id="bottomMsg">
+
+    </section>
+</section>
+
+
+<script src="jquery-3.6.0.min.js"></script>
+<script>
+    $(function(){
+        changeDandP();
+        // 切換送貨自取
+        $("input[name='types']").change(function(){
+            changeDandP();
+        })
+
+        // 設置送貨自取min日期為今天
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+        var yyyy = today.getFullYear();
+        if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+
+        today = yyyy+'-'+mm+'-'+dd;
+        $("input[type='date']").attr("min", today);
+        $("#d_date").val(today);escape
+
+    //    設置自取“未提供"
+        $("#p_date").change(function(){
+            if($("#p_date").val()==""){
+                $("#p_undef").show();
+            }else{
+                $("#p_undef").hide();
+
+            }
+        })
+        //設置送貨“未選擇時間”
+        if($("input[name='d_time']:checked").val()){
+            $("#d_undef").hide();
+        }
+        $("input[name='d_time']").change(function(){
+            $("#d_undef").hide();
+        })
+    })
+
+    function changeDandP(){
+        if($("input[name='types']:checked").val()=="delivery"){
+            $("#forDelivery").show();
+            $("#forPickup").hide();
+        }else{
+            $("#forDelivery").hide();
+            $("#forPickup").show();
+        }
+    }
+    function copyMsg() {
+        var types = $("input[name='types']:checked").val();
+        var customer = $("#customer").val();
+        var orderNo = $("#orderNo").val();
+        var phone = $("#phone").val();
+        // 日期取 日/月
+        var d_date = new Date($("#d_date").val()).getDate()+"/"+(new Date($("#d_date").val()).getMonth()+1);
+        // 轉換星期幾
+        var weekday = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+        var d_day = weekday[new Date($("#d_date").val()).getDay()];
+        // 轉換時間段
+        var d_timePeriod = ["3-6","7-10","5-9"];
+        var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
+        var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1);
+        var p_day = weekday[new Date($("#p_date").val()).getDay()]
+
+        var msg = "";
+        /*送貨*/
+        if (types == "delivery") {
+
+            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，我們會安排${d_day} ${d_date} 下午${d_time}送貨，因最近訂單比較多，運輸人手不足，到達時間可能較晚請見諒🙇🏼‍♀️到達前我們會電話聯絡您😊
+感謝您的支持，如有任何問題，歡迎聯絡我。
+
+收到貨後凍品請及時存放冰箱，食品保存方法可參閱常見問題：https://www.tshfoodhk.com/faq/
+
+因近日疫情嚴峻，為保障大家安全，送貨服務將在樓下大堂進行交收或直接放管理處代收，敬請理解配合🙇🏼‍♀️🙇🏼‍♀️`;
+
+        }
+
+        /*自取*/
+        else if(types == "pickup"){
+            var p_msg = ""
+
+            if($("#p_date").val()==""){
+                p_msg = `*自取時間未提供， 請提供自取時間以便我們提前準備好您的訂單* `
+                $("#p_undef").show();
+            }else{
+                p_msg = `自取時間:${p_day} ${p_date} `
+
+            }
+            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝到店自取訂單，${p_msg}，感謝您的支持，如有任何問題，迎聯絡我。
+
+🛍自取流程：
+到收銀處報上您的訂單編號{#6398｝即可，我們會提前為您準備好您的商品。
+📍自取地址：
+香港西營盤干諾道西68號地下（中銀信用卡中心隔離)
+地鐵西營盤站A2出口/上環站C出口,步行5分鐘
+⏰自取時間：
+星期一至六 : 10AM- 6PM
+(星期日及公眾假期休息)`
+
+        }
+        $("#bottomMsg").html(msg);
+        navigator.clipboard.writeText(msg);
+        return msg;
+    }
+
+    function sendWhatsApp(){
+        var copymsg = copyMsg();
+        console.log(copymsg);
+        var phone = $("#phone").val();
+        navigator.clipboard.writeText(copymsg).then(function(){
+            window.open("https://api.whatsapp.com/send?phone=852"+phone);
+        });
+
+    }
+
+
+</script>
+</body>
+</html>
