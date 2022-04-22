@@ -77,6 +77,7 @@
 </head>
 <body>
 <section class="wrap">
+    <form action="/">
     <section class = "topForm">
         <div class="FormPart">
             <input id="types_d" type="radio" name="types" value="delivery" checked>
@@ -84,6 +85,8 @@
 
             <input id="types_p" type="radio" name="types" value="pickup" >
             <label for="types_p">自取</label>
+
+            <button type="reset">Clear</button>
         </div>
         <div class="FormPart">
             <label for="customer">客戶名稱:</label>
@@ -118,14 +121,15 @@
             </div>
         </div>
         <div id="buttons">
-            <button id="whatsapp" onclick="sendWhatsApp();">Send Whatsapp</button>
-            <button id="copy" onclick="copyMsg();">Copy Msg</button>
+            <button type="button" id="whatsapp" onclick="sendWhatsApp();">Send Whatsapp</button>
+            <button type="button" id="copy" onclick="copyMsg();">Copy Msg</button>
         </div>
 
     </section>
     <section id="bottomMsg">
 
     </section>
+    </form>
 </section>
 
 
@@ -191,6 +195,13 @@
         // 轉換星期幾
         var weekday = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
         var d_day = weekday[new Date($("#d_date").val()).getDay()];
+        var d_today="";
+        switch((new Date($("#d_date").val()).setHours(0,0,0,0) - new Date().setHours(0,0,0,0))/1000 / 60 / 60 / 24){
+            case 0:d_today = "今天"; break;
+            case 1:d_today = "明天"; break;
+            case 2:d_today = "後天"; break;
+            default: d_today="";
+        }
         // 轉換時間段
         var d_timePeriod = ["3-6","7-10","5-9"];
         var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
@@ -201,7 +212,7 @@
         /*送貨*/
         if (types == "delivery") {
 
-            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，我們會安排${d_day} ${d_date} 下午${d_time}送貨，因最近訂單比較多，運輸人手不足，到達時間可能較晚請見諒🙇🏼‍♀️到達前我們會電話聯絡您😊
+            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，我們會安排${d_today} ${d_day} ${d_date} 下午${d_time}送貨，因最近訂單比較多，運輸人手不足，到達時間可能較晚請見諒🙇🏼‍♀️到達前我們會電話聯絡您😊
 感謝您的支持，如有任何問題，歡迎聯絡我。
 
 收到貨後凍品請及時存放冰箱，食品保存方法可參閱常見問題：https://www.tshfoodhk.com/faq/
