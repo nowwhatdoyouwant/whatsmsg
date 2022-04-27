@@ -72,12 +72,17 @@
             margin-left:15px;
         }
 
-
+        #clearBtn{
+            position:absolute;
+            right:20%;
+            top:20px;
+            background-color: #aaa;
+        }
     </style>
 </head>
 <body>
 <section class="wrap">
-    <form action="/">
+
     <section class = "topForm">
         <div class="FormPart">
             <input id="types_d" type="radio" name="types" value="delivery" checked>
@@ -86,9 +91,11 @@
             <input id="types_p" type="radio" name="types" value="pickup" >
             <label for="types_p">自取</label>
 
-            <button type="reset">Clear</button>
         </div>
+        <form action="/" id="theForm">
         <div class="FormPart">
+
+            <button id="clearBtn" type="button" onclick="clearForm();">Clear</button>
             <label for="customer">客戶名稱:</label>
             <input type="text" id="customer" placeholder="客戶名稱">
 
@@ -124,12 +131,12 @@
             <button type="button" id="whatsapp" onclick="sendWhatsApp();">Send Whatsapp</button>
             <button type="button" id="copy" onclick="copyMsg();">Copy Msg</button>
         </div>
-
+        </form>
     </section>
     <section id="bottomMsg">
 
     </section>
-    </form>
+
 </section>
 
 
@@ -141,7 +148,10 @@
         $("input[name='types']").change(function(){
             changeDandP();
         })
+        setDefault();
 
+    })
+    function setDefault(){
         // 設置送貨自取min日期為今天
         var today = new Date();
         var dd = today.getDate();
@@ -158,7 +168,7 @@
         $("input[type='date']").attr("min", today);
         $("#d_date").val(today);escape
 
-    //    設置自取“未提供"
+        //    設置自取“未提供"
         $("#p_date").change(function(){
             if($("#p_date").val()==""){
                 $("#p_undef").show();
@@ -170,12 +180,19 @@
         //設置送貨“未選擇時間”
         if($("input[name='d_time']:checked").val()){
             $("#d_undef").hide();
+        }else{
+            $("#d_undef").show();
         }
         $("input[name='d_time']").change(function(){
             $("#d_undef").hide();
         })
-    })
+    }
+    function clearForm(){
+        $("#theForm")[0].reset();
+        changeDandP();
+        setDefault();
 
+    }
     function changeDandP(){
         if($("input[name='types']:checked").val()=="delivery"){
             $("#forDelivery").show();
@@ -212,7 +229,9 @@
         /*送貨*/
         if (types == "delivery") {
 
-            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，我們會安排${d_today} ${d_day} ${d_date} 下午${d_time}送貨，因最近訂單比較多，運輸人手不足，到達時間可能較晚請見諒🙇🏼‍♀️到達前我們會電話聯絡您😊
+            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，我們會安排您的訂單於:
+📦📦 ${d_today} ${d_date} ${d_day} 下午${d_time}時送貨📦📦
+實際到達時間根據當天送貨路線有可能提前或延後，請見諒🙇🏼‍♀️到達前我們會電話聯絡您😊 請注意接聽電話 📞📞
 感謝您的支持，如有任何問題，歡迎聯絡我。
 
 收到貨後凍品請及時存放冰箱，食品保存方法可參閱常見問題：https://www.tshfoodhk.com/faq/
@@ -235,7 +254,7 @@
             msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝到店自取訂單，${p_msg}，感謝您的支持，如有任何問題，迎聯絡我。
 
 🛍自取流程：
-到收銀處報上您的訂單編號{#6398｝即可，我們會提前為您準備好您的商品。
+到收銀處報上您的訂單編號{#${orderNo}}即可，我們會提前為您準備好您的商品。
 📍自取地址：
 香港西營盤干諾道西68號地下（中銀信用卡中心隔離)
 地鐵西營盤站A2出口/上環站C出口,步行5分鐘
