@@ -273,7 +273,8 @@
         console.log(copymsg);
         var phone = $("#phone").val();
         navigator.clipboard.writeText(copymsg).then(function(){
-            window.open("https://api.whatsapp.com/send?phone=852"+phone);
+//             window.open("https://api.whatsapp.com/send?phone=852"+phone);
+            window.open("whatsapp://send?phone=852"+phone);
         });
 
     }
