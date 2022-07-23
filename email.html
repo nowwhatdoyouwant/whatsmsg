@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:80%;
+            margin:0 auto;
+            font-size:1em;
+            background-color: #bd485e;
+            padding:15px 20px;
+            color:#fff;
+        }
+        .FormPart{
+            margin:15px 0;
+        }
+        input[type="radio"],input[type="checkbox"]{
+            width:25px;
+            height:25px;
+            vertical-align: middle;
+            margin:0 3px;
+
+        }
+        input[type="radio"]~label{
+            line-height:2em;
+            letter-spacing: 0.5em;
+        }
+        input[type="text"]{
+            height:40px;
+            outline:none;
+            display:block;
+            width: 95%;
+            font-size:20px;
+            color:#333;
+            margin:2px 0 10px;
+            border:2px solid #fff;
+        }
+        input[type="date"]{
+            display:inline-block;
+            height:40px;
+        }
+        button{
+            height: 50px;
+            padding:10px 30px;
+            border:2px solid #fff;
+            background-color: #32af84;
+            color:white;
+        }
+        #buttons{
+            position:relative;
+        }
+        button#copy{
+            background-color: #f18933;
+            position:absolute;
+            right:0;
+            top:0;
+        }
+        #forPickup{
+            display:none;
+        }
+        #bottomMsg{
+            margin-top:20px;
+            line-height:1.5em;
+        }
+        #p_undef,#d_undef{
+            font-weight:bold;
+            color:yellow;
+            font-size:1.2em;
+            letter-spacing: 2px;
+            margin-left:15px;
+        }
+
+        #clearBtn{
+            position:absolute;
+            right:20%;
+            top:10px;
+            background-color: #aaa;
+        }
+        #couponCode{
+            overflow-wrap: break-word;
+            inline-size:80%;
+        }
+    </style>
+</head>
+<body>
+<section class="wrap">
+
+    <section class = "topForm">
+        <div class="FormPart">
+
+        </div>
+        <form action="/" id="theForm">
+        <div class="FormPart">
+
+            <button id="clearBtn" type="button" onclick="clearForm();">Clear</button>
+
+            <label for="email">Email</label>
+            <input type="text" id="email" placeholder="Email">
+
+            <label for="orderNo">訂單No：</label>
+            <input type="text" id="orderNo" placeholder="訂單No.">
+
+            <label for="amount">金額:</label>
+            <input type="text" id="amount" placeholder="金額" onchange="calculateCoupon();" onblur="calculateCoupon();">
+
+            <label for="coupon">優惠券張數:</label>
+            <input type="text" id="coupon" readonly placeholder="優惠券張數" onfocus="createCode()">
+
+            <div id="couponCode">
+
+            </div>
+
+        </div>
+        <div id="buttons">
+            <button type="button" id="create" onclick="createCode();">Create HTML Code</button>
+            <a href="mailto:annalam.uci@gmail.com">test email</a>
+        </div>
+        </form>
+    </section>
+    <section id="bottomMsg">
+
+    </section>
+
+</section>
+
+
+<script src="jquery-3.6.0.min.js"></script>
+<script>
+    $(function(){
+
+
+    })
+    function calculateCoupon(){
+        var coupon = Math.floor($("#amount").val()/300)<=10?Math.floor($("#amount").val()/300):10;
+        $("#coupon").val(coupon)
+    }
+
+    function createCouponCode(){
+        var emailName = $("#email").val().split("@")[0];
+        var couponCodeArr = [];
+        var NoOfCoupon = $("#coupon").val();
+        $("#couponCode").html("");
+        for(var i=1;i<=NoOfCoupon;i++){
+            couponCodeArr.push(emailName+i);
+           $("#couponCode").html($("#couponCode").html()+"&nbsp;&nbsp;"+couponCodeArr[i-1])
+        }
+        // console.log(couponCodeArr)
+        return couponCodeArr;
+    }
+
+    function clearForm(){
+        $("#theForm")[0].reset();
+        $("#couponCode").html("");
+    }
+
+    function createCode(){
+        var couponCodeArr = createCouponCode();
+        // console.log(couponCodeArr);
+        var codemsg = "" ;
+        for(var i=0;i<couponCodeArr.length;i++){
+            codemsg += `<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:5px;font-family:andale mono,times;" align="left">
+
+  <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
+    <p style="font-size: 14px; line-height: 140%; text-align: center;"><span style="font-size: 22px; line-height: 30.8px;"><strong>${couponCodeArr[i]}</strong> <span style="color: #169179; line-height: 30.8px; font-size: 22px;"><a rel="noopener" href="https://www.tshfoodhk.com/cart/?wt_coupon=${couponCodeArr[i]}" target="_blank" style="color: #169179;">按此使用</a></span></span></p>
+  </div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>`
+        }
+        // console.log(codemsg);
+        var msg = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<!--[if gte mso 9]>
+<xml>
+  <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+</xml>
+<![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
+  <title></title>
+
+    <style type="text/css">
+      @media only screen and (min-width: 620px) {
+  .u-row {
+    width: 600px !important;
+  }
+  .u-row .u-col {
+    vertical-align: top;
+  }
+
+  .u-row .u-col-100 {
+    width: 600px !important;
+  }
+
+}
+
+@media (max-width: 620px) {
+  .u-row-container {
+    max-width: 100% !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+  .u-row .u-col {
+    min-width: 320px !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+  .u-row {
+    width: calc(100% - 40px) !important;
+  }
+  .u-col {
+    width: 100% !important;
+  }
+  .u-col > div {
+    margin: 0 auto;
+  }
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+
+table,
+tr,
+td {
+  vertical-align: top;
+  border-collapse: collapse;
+}
+
+p {
+  margin: 0;
+}
+
+.ie-container table,
+.mso-container table {
+  table-layout: fixed;
+}
+
+* {
+  line-height: inherit;
+}
+
+a[x-apple-data-detectors='true'] {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_row_9 .v-row-background-image--inner { background-image: url('https://cdn.templates.unlayer.com/assets/1652875037380-294666.jpg') !important; background-position: center top !important; background-repeat: no-repeat !important; } #u_row_9 .v-row-background-image--outer { background-position: center top !important; background-repeat: no-repeat !important; } #u_row_9.v-row-background-image--outer { background-position: center top !important; background-repeat: no-repeat !important; } #u_content_image_7 .v-container-padding-padding { padding: 30px 10px 10px !important; } #u_content_image_7 .v-src-width { width: auto !important; } #u_content_image_7 .v-src-max-width { max-width: 31% !important; } #u_content_button_4 .v-container-padding-padding { padding: 10px 10px 114px !important; } #u_content_button_4 .v-size-width { width: 44% !important; } #u_content_button_1 .v-container-padding-padding { padding: 10px 10px 114px !important; } #u_content_button_1 .v-size-width { width: 44% !important; } }
+    </style>
+
+
+
+</head>
+
+<body class="clean-body u_body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #e7e7e7;color: #000000">
+  <!--[if IE]><div class="ie-container"><![endif]-->
+  <!--[if mso]><div class="mso-container"><![endif]-->
+  <table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #e7e7e7;width:100%" cellpadding="0" cellspacing="0">
+  <tbody>
+  <tr style="vertical-align: top">
+    <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+    <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #e7e7e7;"><![endif]-->
+
+
+<div id="u_row_9" class="u-row-container v-row-background-image--outer" style="padding: 0px;background-color: transparent">
+  <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <div class="v-row-background-image--inner" style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-image: url('https://cdn.templates.unlayer.com/assets/1652871109396-723340.png');background-repeat: no-repeat;background-position: center top;background-color: transparent;">
+      <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="v-row-background-image--outer" style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr class="v-row-background-image--inner" style="background-image: url('https://cdn.templates.unlayer.com/assets/1652871109396-723340.png');background-repeat: no-repeat;background-position: center top;background-color: transparent;"><![endif]-->
+
+<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
+  <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+  <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+<table id="u_content_image_7" style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 28px;font-family:andale mono,times;" align="left">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td style="padding-right: 0px;padding-left: 0px;" align="center">
+
+      <img align="center" border="0" src="https://www.tshfoodhk.com/wp-content/uploads/2022/07/logo-solo-white.png" alt="Unlayer Logo" title="Unlayer Logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 15%;max-width: 87px;" width="87" class="v-src-width v-src-max-width"/>
+
+    </td>
+  </tr>
+</table>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+  </div>
+</div>
+<!--[if (mso)|(IE)]></td><![endif]-->
+      <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+    </div>
+  </div>
+</div>
+
+
+
+<div class="u-row-container v-row-background-image--outer" style="padding: 0px;background-color: transparent">
+  <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <div class="v-row-background-image--inner" style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+      <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="v-row-background-image--outer" style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr class="v-row-background-image--inner" style="background-color: transparent;"><![endif]-->
+
+<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
+  <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+  <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td style="padding-right: 0px;padding-left: 0px;" align="center">
+      <a href="https://www.tshfoodhk.com/2022/06/21/2022%E5%B9%B4%E9%80%B1%E5%B9%B4%E6%85%B6%E6%B4%BB%E5%8B%95%E8%A9%B3%E6%83%85%E5%8F%8A%E7%B4%B0%E5%89%87/#coupon" target="_self">
+      <img align="center" border="0" src="https://www.tshfoodhk.com/wp-content/uploads/2022/07/現金優惠券Banner.jpeg" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 580px;" width="580" class="v-src-width v-src-max-width"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+  </div>
+</div>
+<!--[if (mso)|(IE)]></td><![endif]-->
+      <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+    </div>
+  </div>
+</div>
+
+
+
+<div class="u-row-container v-row-background-image--outer" style="padding: 0px;background-color: transparent">
+  <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <div class="v-row-background-image--inner" style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+      <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="v-row-background-image--outer" style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr class="v-row-background-image--inner" style="background-color: transparent;"><![endif]-->
+
+<!--[if (mso)|(IE)]><td align="center" width="600" style="background-color: #ecf0f1;width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
+  <div style="background-color: #ecf0f1;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+  <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+  <h1 style="margin: 0px; line-height: 170%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 20px;">
+    <strong>週年感謝祭活動相關回贈消費記錄:</strong><br />訂單: #${$("#orderNo").val()} <br />消費金額: $${$("#amount").val()}<br />優惠券張數: ${$("#coupon").val()}
+  </h1>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+  </div>
+</div>
+<!--[if (mso)|(IE)]></td><![endif]-->
+      <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+    </div>
+  </div>
+</div>
+
+
+
+<div class="u-row-container v-row-background-image--outer" style="padding: 0px;background-color: transparent">
+  <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <div class="v-row-background-image--inner" style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+      <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="v-row-background-image--outer" style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr class="v-row-background-image--inner" style="background-color: transparent;"><![endif]-->
+
+<!--[if (mso)|(IE)]><td align="center" width="600" style="background-color: #c2e0f4;width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
+  <div style="background-color: #c2e0f4;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+  <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+  <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+    <strong>優惠券代碼 COUPON CODE</strong>
+  </h1>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+${codemsg}
+
+<table id="u_content_button_4" style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 20px;font-family:andale mono,times;" align="left">
+
+<div align="center">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:andale mono,times;"><tr><td style="font-family:andale mono,times;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.tshfoodhk.com/" style="height:37px; v-text-anchor:middle; width:383px;" arcsize="11%" stroke="f" fillcolor="#ffffff"><w:anchorlock/><center style="color:#0a0a0a;font-family:andale mono,times;"><![endif]-->
+    <a href="https://www.tshfoodhk.com/" target="_blank" class="v-size-width" style="box-sizing: border-box;display: inline-block;font-family:andale mono,times;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #0a0a0a; background-color: #ffffff; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:66%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
+      <span style="display:block;padding:10px 20px;line-height:120%;">♥去網店看看 →</span>
+    </a>
+  <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
+</div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+  <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
+    <p dir="rtl" style="font-size: 14px; line-height: 140%; text-align: center;"><span style="color: #e03e2d; font-size: 14px; line-height: 19.6px;">只限網店使用， 優惠券每人每單限用一張，不設最低消費金額</span><br /><span style="color: #e03e2d; font-size: 20px; line-height: 28px;">有效期:2022年8月1日-2022年9月30日</span><br /><span style="color: #34495e; font-size: 14px; line-height: 19.6px;"><a rel="noopener" href="https://www.tshfoodhk.com/2022/06/21/2022%E5%B9%B4%E9%80%B1%E5%B9%B4%E6%85%B6%E6%B4%BB%E5%8B%95%E8%A9%B3%E6%83%85%E5%8F%8A%E7%B4%B0%E5%89%87/#coupon" target="_blank" style="color: #34495e;">詳情請參閱使用細則 </a></span></p>
+  </div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+  </div>
+</div>
+<!--[if (mso)|(IE)]></td><![endif]-->
+      <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+    </div>
+  </div>
+</div>
+
+
+
+<div class="u-row-container v-row-background-image--outer" style="padding: 0px;background-color: transparent">
+  <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <div class="v-row-background-image--inner" style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-image: url('https://cdn.templates.unlayer.com/assets/1652870143337-437952.png');background-repeat: no-repeat;background-position: center top;background-color: transparent;">
+      <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="v-row-background-image--outer" style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr class="v-row-background-image--inner" style="background-image: url('https://cdn.templates.unlayer.com/assets/1652870143337-437952.png');background-repeat: no-repeat;background-position: center top;background-color: transparent;"><![endif]-->
+
+<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
+  <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+  <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+  <div style="color: #ecf0f1; line-height: 140%; text-align: center; word-wrap: break-word;">
+    <p style="font-size: 14px; line-height: 140%;"> </p>
+<p style="font-size: 14px; line-height: 140%;"> </p>
+<p style="font-size: 14px; line-height: 140%;"><span style="font-size: 20px; line-height: 28px;">使用TIPS:</span></p>
+<p style="font-size: 14px; line-height: 140%;"><span style="font-size: 16px; line-height: 22.4px;">結賬時請在Checkout頁面輸入優惠碼，或點擊上方優惠碼鏈接直接使用，如無法打開，可在結賬Checkout頁輸入優惠碼使用</span></p>
+  </div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table id="u_content_button_1" style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 200px;font-family:andale mono,times;" align="left">
+
+<div align="center">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:andale mono,times;"><tr><td style="font-family:andale mono,times;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.tshfoodhk.com/" style="height:44px; v-text-anchor:middle; width:371px;" arcsize="9%" stroke="f" fillcolor="#ffffff"><w:anchorlock/><center style="color:#0a0a0a;font-family:andale mono,times;"><![endif]-->
+    <a href="https://www.tshfoodhk.com/" target="_blank" class="v-size-width" style="box-sizing: border-box;display: inline-block;font-family:andale mono,times;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #0a0a0a; background-color: #ffffff; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:64%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
+      <span style="display:block;padding:10px 20px 17px;line-height:120%;">♥去網店看看 →</span>
+    </a>
+  <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
+</div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table style="font-family:andale mono,times;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:andale mono,times;" align="left">
+
+  <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
+    <p style="font-size: 14px; line-height: 140%;"><strong>如有任何問題，歡迎在營業時間內聯絡我們</strong></p>
+<p style="font-size: 14px; line-height: 140%;"><strong>上海同順興（香港）公司</strong></p>
+<p style="font-size: 14px; line-height: 140%;">營業時間: 星期一至星期六 9:30AM - 6PM 星期日及公眾假期休息<br />門市地址:上環干諾道西68號<br />聯絡電話:2517 1523<br />Email:cs@tshfoodhk.com<br />網址:tshfoodhk.com</p>
+  </div>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+  </div>
+</div>
+<!--[if (mso)|(IE)]></td><![endif]-->
+      <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+    </div>
+  </div>
+</div>
+
+
+    <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+    </td>
+  </tr>
+  </tbody>
+  </table>
+  <!--[if mso]></div><![endif]-->
+  <!--[if IE]></div><![endif]-->
+</body>
+
+</html>`
+        navigator.clipboard.writeText(msg);
+        console.log(msg);
+    }
+
+    function sendWhatsApp(){
+
+
+    }
+
+
+</script>
+</body>
+</html>
