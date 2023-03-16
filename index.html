@@ -223,7 +223,7 @@
         var orderNo = $("#orderNo").val();
         var phone = $("#phone").val();
         // 日期取 日/月
-        var d_date = new Date($("#d_date").val()).getDate()+"/"+(new Date($("#d_date").val()).getMonth()+1);
+        var d_date = new Date($("#d_date").val()).getDate()+"/"+(new Date($("#d_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         // 轉換星期幾
         var weekday = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
         var d_day = weekday[new Date($("#d_date").val()).getDay()];
@@ -237,7 +237,7 @@
         // 轉換時間段
         var d_timePeriod = ["3-6","6-10","5-9"];
         var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
-        var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear()+1);
+        var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         var p_day = weekday[new Date($("#p_date").val()).getDay()]
 
         var msg = "";
