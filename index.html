@@ -114,21 +114,34 @@
                 <input type="date" id="d_date">
                 <br>
 
-                <input id="d_noon" type="radio" name="d_time" value="0">
-                <label for="d_noon" >午送</label>
+                <input id="d_morning" type="radio" name="d_time" value="0">
+                <label for="d_morning" >11-2</label>
+                <input id="d_noon" type="radio" name="d_time" value="1">
+                <label for="d_noon">1-6</label>
 
-                <input id="d_night" type="radio" name="d_time" value="1">
-                <label for="d_night">晚送</label>
+                <input id="d_night" type="radio" name="d_time" value="2">
+                <label for="d_night">6-10</label>
 
-                <input id="d_jp" type="radio" name="d_time" value="2">
+                <input id="d_jp" type="radio" name="d_time" value="3">
                 <label for="d_jp">JP送</label>
                 <div id="d_undef">未選時間段！</div>
             </div>
 
             <div id="forPickup">
+                <div>
+                    <label for="p_loc">自取門市:</label>
+                    <input id="p_loc1" type="radio" name="p_loc" value="hh" checked>
+                    <label for="p_loc1">紅磡</label>
+                    <input id="p_loc2" type="radio" name="p_loc" value="sw" checked>
+                    <label for="p_loc2">上環</label>
+                </div>
+
                 <label for="p_date">自取日期:</label>
                 <input type="date" id="p_date">
                 <span id="p_undef">未提供！</span>
+                <!-- 自取門市 -->
+
+
             </div>
 
             <div id="forUnpaid">
@@ -174,9 +187,9 @@
         }
 
         today = yyyy+'-'+mm+'-'+dd;
-        $("input[type='date']").attr("min", today);
-        $("#d_date").val(today);escape
 
+        $("input[type='date']").attr("min", today);
+        $("#d_date").val(today);
         //    設置自取“未提供"
         $("#p_date").change(function(){
             if($("#p_date").val()==""){
@@ -235,7 +248,7 @@
             default: d_today="";
         }
         // 轉換時間段
-        var d_timePeriod = ["3-6","6-10","5-9"];
+        var d_timePeriod = ["11AM-2PM","1PM-6PM","6PM-10PM","4-10"];
         var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
         var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         var p_day = weekday[new Date($("#p_date").val()).getDay()]
@@ -243,10 +256,10 @@
         var msg = "";
         /*送貨 - 自送*/
         console.log("dtime",d_time);
-        if (types == "delivery" && d_time == "3-6"|| d_time =="6-10") {
+        if (types == "delivery" &&  $("input[name='d_time']:checked").val()<3) {
             console.log("1")
             msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
-📦📦 ${d_today} ${d_date} ${d_day} 下午${d_time}時送貨📦📦
+📦📦 ${d_today} ${d_date} ${d_day} ${d_time}送貨📦📦
 實際到達時間根據當天送貨路線有可能提前或延後，請見諒🙇🏼‍♀️
 到達前我們會電話聯絡您😊 請注意接聽電話 📞📞
 如有聯絡不上/無人收貨的情況，貨品將會送回至公司倉庫保存並需要另行安排派送
@@ -258,7 +271,7 @@
 
         }
         /*送貨 - JP*/
-        else if(types == "delivery" && d_time == "5-9"){
+        else if(types == "delivery" && $("input[name='d_time']:checked").val()==3){
             msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
 🚚您的訂單將通過運輸公司: Jumppoint 派送
 🗓預計最早送達日期: ${d_today} ${d_date} ${d_day} 
@@ -282,19 +295,34 @@
                 p_msg = `*自取時間未提供， 請提供自取時間以便我們提前準備好您的訂單* `
                 $("#p_undef").show();
             }else{
-                p_msg = `自取時間:${p_day} ${p_date} `
+                p_msg = `自取日期:${p_day} ${p_date} `
 
             }
-            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝到店自取訂單，
-🗓️${p_msg}
-🛍自取流程：
-到收銀處報上您的訂單編號{#${orderNo}}即可，我們會提前為您準備好您的商品。
+            var ploc = ""
+            switch($("input[name='p_loc']:checked").val()){
+                case "hh": ploc=`
 📍自取地址：
+*紅磡門市*
+紅磡鶴園街2G號地鋪CD3(匯豐銀行轉入去)
+地鐵土瓜灣D1出口,步行10分鐘, 巴士北拱街/庇利街/鶴園街站落
+⏰自取時間：
+星期一至日 : 10AM- 7PM
+(公眾假期休息)`
+                case "sw": ploc = `
+📍自取地址：
+*上環門市*
 香港西營盤干諾道西68號地下（中銀信用卡中心隔離)
 地鐵西營盤站A2出口/上環站C出口,步行5分鐘
 ⏰自取時間：
 星期一至六 : 10AM- 6PM
 (星期日及公眾假期休息)
+                `
+            }
+            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝到店自取訂單，
+🗓️${p_msg}
+🛍自取流程：
+到收銀處報上您的訂單編號{#${orderNo}}即可，我們會提前為您準備好您的商品。
+${ploc}
 感謝您的支持，如有任何問題，歡迎聯絡我。`
 
 
