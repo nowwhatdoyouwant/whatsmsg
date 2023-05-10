@@ -300,14 +300,14 @@
             }
             var ploc = ""
             switch($("input[name='p_loc']:checked").val()){
-                case "hh": ploc=`
+                case "hh": ploc=` 
 📍自取地址：
 *紅磡門市*
 紅磡鶴園街2G號地鋪CD3(匯豐銀行轉入去)
 地鐵土瓜灣D1出口,步行10分鐘, 巴士北拱街/庇利街/鶴園街站落
 ⏰自取時間：
 星期一至日 : 10AM- 7PM
-(公眾假期休息)`
+(公眾假期休息)` ;break;
                 case "sw": ploc = `
 📍自取地址：
 *上環門市*
@@ -316,7 +316,7 @@
 ⏰自取時間：
 星期一至六 : 10AM- 6PM
 (星期日及公眾假期休息)
-                `
+                `;break;
             }
             msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝到店自取訂單，
 🗓️${p_msg}
