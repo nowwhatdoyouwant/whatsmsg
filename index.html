@@ -248,7 +248,7 @@
             default: d_today="";
         }
         // 轉換時間段
-        var d_timePeriod = ["11AM-2PM","1PM-6PM","6PM-10PM","4-10"];
+        var d_timePeriod = ["11AM-6PM","1PM-6PM","6PM-10PM","4-10"];
         var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
         var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         var p_day = weekday[new Date($("#p_date").val()).getDay()]
