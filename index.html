@@ -112,6 +112,8 @@
             <div id="forDelivery">
                 <label for="d_date">送貨日期:</label>
                 <input type="date" id="d_date">
+                <input type="checkbox" id="fastDelivery">
+                <label for="fastDelivery">特快配送單</label>
                 <br>
 
                 <input id="d_morning" type="radio" name="d_time" value="0">
@@ -253,12 +255,19 @@
         var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         var p_day = weekday[new Date($("#p_date").val()).getDay()]
 
-        var msg = "";
+        
         /*送貨 - 自送*/
+        var fd = $("#fastDelivery").is(":checked")
+        console.log("fd",fd)
         console.log("dtime",d_time);
+        var msg = "";
+        if(fd){
+            msg += `🚀🚀*特快配送單*🚀🚀
+            `
+        }
         if (types == "delivery" &&  $("input[name='d_time']:checked").val()<3) {
             console.log("1")
-            msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
+            msg += `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
 📦📦 ${d_today} ${d_date} ${d_day} ${d_time}送貨📦📦
 實際到達時間根據當天送貨路線有可能提前或延後，請見諒🙇🏼‍♀️
 到達前我們會電話聯絡您😊 請注意接聽電話 📞📞
