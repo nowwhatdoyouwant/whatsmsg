@@ -117,12 +117,12 @@
                 <br>
 
                 <input id="d_morning" type="radio" name="d_time" value="0">
-                <label for="d_morning" >11-6</label>
+                <label for="d_morning" >10-7</label>
                 <input id="d_noon" type="radio" name="d_time" value="1">
-                <label for="d_noon">1-6</label>
+                <label for="d_noon">1-7</label>
 
                 <input id="d_night" type="radio" name="d_time" value="2">
-                <label for="d_night">6-10</label>
+                <label for="d_night">7-10</label>
 
                 <input id="d_jp" type="radio" name="d_time" value="3">
                 <label for="d_jp">JP送</label>
@@ -250,7 +250,7 @@
             default: d_today="";
         }
         // 轉換時間段
-        var d_timePeriod = ["11AM-6PM","1PM-6PM","6PM-10PM","4-10"];
+        var d_timePeriod = ["10AM-7PM","1PM-7PM","7PM-10PM","4-10"];
         var d_time = $("input[name='d_time']:checked").val()?d_timePeriod[$("input[name='d_time']:checked").val()]:"";
         var p_date = new Date($("#p_date").val()).getDate()+"/"+(new Date($("#p_date").val()).getMonth()+1)+"/"+(new Date($("#p_date").val()).getFullYear());
         var p_day = weekday[new Date($("#p_date").val()).getDay()]
@@ -267,7 +267,9 @@
         if (types == "delivery" &&  $("input[name='d_time']:checked").val()<3) {
             console.log("1")
             msg += `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
+
 📦📦 ${d_today} ${d_date} ${d_day} ${d_time}送貨📦📦
+
 實際到達時間根據當天送貨路線有可能提前或延後，請見諒🙇🏼‍♀️
 到達前我們會電話聯絡您😊 請注意接聽電話 📞📞
 如有聯絡不上/無人收貨的情況，貨品將會送回至公司倉庫保存並需要另行安排派送
@@ -275,6 +277,7 @@
 收到貨後凍品請及時存放冰箱，食品保存方法可參閱常見問題：https://www.tshfoodhk.com/faq/
 
 感謝您的支持，如有任何問題，歡迎聯絡我。
+*週年慶期間訂單較多，我們會盡力送達，有可能產生延遲敬請理解*
 `;
 
         }
