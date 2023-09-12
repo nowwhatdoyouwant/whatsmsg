@@ -57,6 +57,9 @@
             right:0;
             top:0;
         }
+        button#whatsappOnly{
+            background-color: #5f2768;
+        }
         #forPickup{
             display:none;
         }
@@ -75,7 +78,7 @@
 
         #clearBtn{
             position:absolute;
-            right:10%;
+            right:30%;
             top:20px;
             background-color: #aaa;
         }
@@ -152,8 +155,9 @@
             </div>
         </div>
         <div id="buttons">
-            <button type="button" id="whatsapp" onclick="sendWhatsApp();">Send Whatsapp</button>
-            <button type="button" id="copy" onclick="copyMsg();">Copy Msg</button>
+            <button type="button" id="whatsapp" onclick="sendWhatsApp();">Whatsapp確認</button>
+            <button type="button" id="whatsappOnly" onclick="sendOnly();">Whatsapp ONLY</button>
+            <button type="button" id="copy" onclick="copyMsg();">Copy Only</button>
         </div>
         </form>
     </section>
@@ -262,7 +266,8 @@
         console.log("dtime",d_time);
         var msg = "";
         if(fd){
-            msg += `🚀🚀*特快配送單*🚀🚀`
+            msg += `🚀🚀*特快配送單*🚀🚀
+            `
         }
         if (types == "delivery" &&  $("input[name='d_time']:checked").val()<3) {
             console.log("1")
@@ -366,6 +371,11 @@ Payme Link: https://payme.hsbc/tshfoodhk
             window.open("whatsapp://send?phone=852"+phone);
         });
 
+    }
+
+    function sendOnly(){
+        var phone = $("#phone").val();
+        window.open("whatsapp://send?phone=852"+phone);
     }
 
 
