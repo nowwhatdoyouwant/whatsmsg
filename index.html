@@ -15,6 +15,7 @@
         }
         .FormPart{
             margin:15px 0;
+            position:relative;
         }
         input[type="radio"],input[type="checkbox"]{
             width:20px;
@@ -43,7 +44,7 @@
         }
         button{
             height: 50px;
-            padding:10px 30px;
+            padding:10px;
             border:2px solid #fff;
             background-color: #32af84;
             color:white;
@@ -75,13 +76,18 @@
             letter-spacing: 2px;
             margin-left:15px;
         }
-
         #clearBtn{
-            position:absolute;
-            right:30%;
-            top:20px;
             background-color: #aaa;
         }
+        @media screen and (max-width: 600px) {
+        #clearBtn{
+            position:absolute;
+            padding:10px 20px;
+            right:-10px;
+            top:-20px;
+
+        }
+    }
     </style>
 </head>
 <body>
@@ -97,12 +103,12 @@
 
             <input id="types_u" type="radio" name="types" value="unpaid" >
             <label for="types_p">待付款</label>
-
+            <button id="clearBtn" type="button" onclick="clearForm();">Clear</button>
         </div>
         <form action="/" id="theForm">
         <div class="FormPart">
 
-            <button id="clearBtn" type="button" onclick="clearForm();">Clear</button>
+            
             <label for="customer">客戶名稱:</label>
             <input type="text" id="customer" placeholder="客戶名稱">
 
@@ -155,8 +161,8 @@
             </div>
         </div>
         <div id="buttons">
-            <button type="button" id="whatsapp" onclick="sendWhatsApp();">Whatsapp確認</button>
-            <button type="button" id="whatsappOnly" onclick="sendOnly();">Whatsapp ONLY</button>
+            <button type="button" id="whatsapp" onclick="sendWhatsApp();">WA確認</button>
+            <button type="button" id="whatsappOnly" onclick="sendOnly();">WA ONLY</button>
             <button type="button" id="copy" onclick="copyMsg();">Copy Only</button>
         </div>
         </form>
@@ -193,18 +199,37 @@
         }
 
         today = yyyy+'-'+mm+'-'+dd;
+        
+        var threedays = new Date();
+        threedays.setDate(threedays.getDate()+3);
+        console.log(threedays);
+        var dd3 = threedays.getDate();
+        console.log(dd3);
+        var mm3 = threedays.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+        var yyyy3 = threedays.getFullYear();
+        if(dd3<10){
+            dd3='0'+dd3
+        }
+        if(mm3<10){
+            mm3='0'+mm3
+        }
+
+        threedays = yyyy3+'-'+mm3+'-'+dd3;
+
 
         $("input[type='date']").attr("min", today);
         $("#d_date").val(today);
+        // 自取默認3天後日期
+        $("#p_date").val(threedays);
         //    設置自取“未提供"
-        $("#p_date").change(function(){
-            if($("#p_date").val()==""){
-                $("#p_undef").show();
-            }else{
-                $("#p_undef").hide();
+        // $("#p_date").change(function(){
+        //     if($("#p_date").val()==""){
+        //         $("#p_undef").show();
+        //     }else{
+        //         $("#p_undef").hide();
 
-            }
-        })
+        //     }
+        // })
         //設置送貨“未選擇時間”
         if($("input[name='d_time']:checked").val()){
             $("#d_undef").hide();
@@ -266,8 +291,7 @@
         console.log("dtime",d_time);
         var msg = "";
         if(fd){
-            msg += `🚀🚀*特快配送單*🚀🚀
-            `
+            msg += `🚀🚀*特快配送單*🚀🚀\n`
         }
         if (types == "delivery" &&  $("input[name='d_time']:checked").val()<3) {
             console.log("1")
@@ -276,7 +300,7 @@
 📦📦 ${d_today} ${d_date} ${d_day} ${d_time}送貨📦📦
 
 實際到達時間根據當天送貨路線有可能提前或延後，請見諒🙇🏼‍♀️
-到達前我們會電話聯絡您😊 請注意接聽電話 📞📞
+到達前我們會電話聯絡您😊 *請留意送貨通知手機號:52056664* 📞📞
 如有聯絡不上/無人收貨的情況，貨品將會送回至公司倉庫保存並需要另行安排派送
 
 收到貨後凍品請及時存放冰箱，食品保存方法可參閱常見問題：https://www.tshfoodhk.com/faq/
@@ -289,7 +313,7 @@
         /*送貨 - JP*/
         else if(types == "delivery" && $("input[name='d_time']:checked").val()==3){
             msg = `Dear ${customer}您好，我是同順興Anna。我們已經收到您的網站｛#${orderNo}已完成付款｝送貨上門訂單，以下是您的送貨安排:
-🚚您的訂單將通過運輸公司: Jumppoint 派送
+🚚您的訂單將通過運輸公司:    
 🗓預計最早送達日期: ${d_today} ${d_date} ${d_day} 
 🕣派送時間: 一般5-10PM之間派送，工商地址盡量會在7PM前派送
 ❣實際到達日期根據運輸公司送貨安排有可能延遲至第二天送達，請見諒🙇🏼‍♀️
